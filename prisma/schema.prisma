@@ -1,0 +1,134 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Learner {
+  id              String               @id @default(cuid())
+  name            String               @default("Demo Learner")
+  email           String               @unique @default("demo@mentor.dev")
+  avatar          String?
+  createdAt       DateTime             @default(now())
+  sessions        Session[]
+  predictions     PredictionAttempt[]
+  hintUsages      HintUsage[]
+  explainBacks    ExplainBackAttempt[]
+  quizAttempts    QuizAttempt[]
+  bugResults      BugChallengeResult[]
+  conceptMastery  ConceptMastery[]
+}
+
+model LearningTask {
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+  difficulty      String    // "beginner" | "intermediate" | "advanced"
+  concepts        String    // JSON array of concept tags
+  starterCode     String
+  solutionCode    String
+  objectives      String    // JSON array
+  requirements    String    // JSON array
+  hasBugChallenge Boolean   @default(false)
+  buggyCode       String?
+  bugDescription  String?
+  order           Int       @default(0)
+  sessions        Session[]
+}
+
+model Session {
+  id               String               @id @default(cuid())
+  learnerId        String
+  taskId           String
+  status           String               @default("active") // "active" | "completed"
+  currentHintLevel Int                  @default(0)
+  codeSnapshot     String?
+  startedAt        DateTime             @default(now())
+  completedAt      DateTime?
+  learner          Learner              @relation(fields: [learnerId], references: [id])
+  task             LearningTask         @relation(fields: [taskId], references: [id])
+  predictions      PredictionAttempt[]
+  hintUsages       HintUsage[]
+  explainBacks     ExplainBackAttempt[]
+  quizAttempts     QuizAttempt[]
+  bugResults       BugChallengeResult[]
+}
+
+model PredictionAttempt {
+  id            String   @id @default(cuid())
+  learnerId     String
+  sessionId     String
+  question      String
+  prediction    String
+  correctAnswer String
+  isCorrect     Boolean
+  explanation   String?
+  createdAt     DateTime @default(now())
+  learner       Learner  @relation(fields: [learnerId], references: [id])
+  session       Session  @relation(fields: [sessionId], references: [id])
+}
+
+model HintUsage {
+  id          String   @id @default(cuid())
+  learnerId   String
+  sessionId   String
+  level       Int
+  content     String
+  requestedAt DateTime @default(now())
+  learner     Learner  @relation(fields: [learnerId], references: [id])
+  session     Session  @relation(fields: [sessionId], references: [id])
+}
+
+model ExplainBackAttempt {
+  id        String   @id @default(cuid())
+  learnerId String
+  sessionId String
+  question  String
+  response  String
+  score     Int
+  feedback  String
+  attempt   Int      @default(1)
+  createdAt DateTime @default(now())
+  learner   Learner  @relation(fields: [learnerId], references: [id])
+  session   Session  @relation(fields: [sessionId], references: [id])
+}
+
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  learnerId String
+  sessionId String
+  questions String   // JSON
+  answers   String   // JSON
+  score     Int
+  feedback  String   // JSON
+  createdAt DateTime @default(now())
+  learner   Learner  @relation(fields: [learnerId], references: [id])
+  session   Session  @relation(fields: [sessionId], references: [id])
+}
+
+model BugChallengeResult {
+  id          String   @id @default(cuid())
+  learnerId   String
+  sessionId   String
+  resolved    Boolean  @default(false)
+  hintsUsed   Int      @default(0)
+  diagnosis   String?
+  fixedCode   String?
+  createdAt   DateTime @default(now())
+  learner     Learner  @relation(fields: [learnerId], references: [id])
+  session     Session  @relation(fields: [sessionId], references: [id])
+}
+
+model ConceptMastery {
+  id        String   @id @default(cuid())
+  learnerId String
+  concept   String
+  score     Float    @default(0)
+  updatedAt DateTime @updatedAt
+  learner   Learner  @relation(fields: [learnerId], references: [id])
+
+  @@unique([learnerId, concept])
+}
