@@ -163,14 +163,14 @@ export default function LandingPage() {
 
             {/* Code snippet */}
             <div className="lg:col-span-5 p-4 bg-slate-950 text-slate-200 overflow-x-auto leading-relaxed">
-              <div className="text-slate-500">// Predict what clicking Add will do...</div>
+              <div className="text-slate-500">{"// Predict what clicking Add will do..."}</div>
               <div><span className="text-violet-400">const</span> [<span className="text-cyan-300">tasks</span>, <span className="text-cyan-300">setTasks</span>] = <span className="text-indigo-400">useState</span>([]);</div>
-              <div><span className="text-violet-400">const</span> [<span className="text-cyan-300">inputValue</span>, <span className="text-cyan-300">setInputValue</span>] = <span className="text-indigo-400">useState</span>(<span className="text-emerald-300">''</span>);</div>
+              <div><span className="text-violet-400">const</span> [<span className="text-cyan-300">inputValue</span>, <span className="text-cyan-300">setInputValue</span>] = <span className="text-indigo-400">useState</span>(<span className="text-emerald-300">&#39;&#39;</span>);</div>
               <br />
               <div><span className="text-violet-400">const</span> <span className="text-yellow-300">addTask</span> = () =&gt; &#123;</div>
-              <div className="pl-4 text-slate-400">// Spread previous tasks and append new item</div>
+              <div className="pl-4 text-slate-400">{"// Spread previous tasks and append new item"}</div>
               <div className="pl-4"><span className="text-indigo-400">setTasks</span>([...tasks, &#123; id: Date.now(), text: inputValue &#125;]);</div>
-              <div className="pl-4"><span className="text-indigo-400">setInputValue</span>(<span className="text-emerald-300">''</span>);</div>
+              <div className="pl-4"><span className="text-indigo-400">setInputValue</span>(<span className="text-emerald-300">&#39;&#39;</span>);</div>
               <div>&#125;;</div>
             </div>
 
